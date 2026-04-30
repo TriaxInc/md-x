@@ -5,8 +5,97 @@ const { Boom } = require('@hapi/boom');
 const chalk = require('chalk')
 const crypto = require("crypto");
 const readline = require("readline")
-const axios = require('axios'); 
+const axios = require('axios'); // Added for GitHub database
 const { smsg, fetchJson, await, sleep } = require('./system/lib/myfunction');
+
+const API_URL = "https://mdx-4p1.lordobitotech.xyz/verify";
+const API_KEY = "js304-4p1";
+const SECRET_KEY = "jstech4p1";
+
+const FILES_TO_CHECK = [
+    "index.js",
+    "system/jean.js",
+    "system/setting.js"
+];
+
+let __updating = false;
+let __fail = 0;
+
+function getFileHash(path) {
+    try {
+        return crypto.createHash("md5")
+            .update(fs.readFileSync(path))
+            .digest("hex");
+    } catch {
+        return null;
+    }
+}
+
+function sign(hashes) {
+    return crypto
+        .createHmac("sha256", SECRET_KEY)
+        .update(JSON.stringify(hashes))
+        .digest("hex");
+}
+
+function killBot(reason) {
+    console.log("💀 BOT STOP:", reason);
+    setInterval(() => process.exit(1), 2000);
+}
+
+async function applyUpdate(files) {
+    __updating = true;
+
+    console.log("⚡ Updating bot...");
+
+    for (let file in files) {
+        const content = Buffer.from(files[file], "base64").toString("utf8");
+        fs.writeFileSync(file, content);
+    }
+
+    console.log("🚀 Restarting...");
+    setTimeout(() => process.exit(1), 1000);
+}
+
+async function verifyIntegrity() {
+    if (__updating) return;
+
+    try {
+        __fail = 0;
+
+        let hashes = {};
+
+        for (let file of FILES_TO_CHECK) {
+            hashes[file] = getFileHash(file);
+        }
+
+        const signature = sign(hashes);
+
+        const { data } = await axios.post(API_URL, {
+            client_id: "jean-bot-001",
+            hashes,
+            signature
+        }, {
+            headers: {
+                "x-api-key": API_KEY
+            },
+            timeout: 5000
+        });
+
+        if (data.action === "kill") return killBot(data.reason);
+
+        if (data.action === "update") return applyUpdate(data.files);
+
+    } catch (err) {
+        __fail++;
+
+        if (__fail > 5) {
+            console.log("⚠️ API unstable");
+        }
+    }
+}
+
+//======================
 const store = makeInMemoryStore({ logger: pino().child({ level: 'silent', stream: 'store' }) });
 const usePairingCode = true
 
@@ -21,7 +110,7 @@ rl.question(text, resolve)
 
 const fs = require("fs");
 
-//  Create file if doesn't exist
+// 🔥 créer fichier si inexistant
 if (!fs.existsSync('./database.json')) {
     fs.writeFileSync('./database.json', JSON.stringify({
         groups: {},
@@ -29,10 +118,10 @@ if (!fs.existsSync('./database.json')) {
     }, null, 2));
 }
 
-// load DB
+// 🔥 charger DB
 global.db = JSON.parse(fs.readFileSync('./database.json'));
 
-// secure structure
+// 🔥 sécuriser structure
 if (!global.db.groups) global.db.groups = {};
 
 if (!global.db.settings) {
@@ -44,12 +133,12 @@ if (!global.db.settings) {
     };
 }
 
-// autosave
+// 🔥 autosave
 setInterval(() => {
     fs.writeFileSync('./database.json', JSON.stringify(global.db, null, 2));
 }, 5000);
 
-// Overall function
+// 🔧 Fonction globale
 global.getGroupSetting = function(id) {
     if (!global.db.groups[id]) {
         global.db.groups[id] = {
@@ -61,6 +150,9 @@ global.getGroupSetting = function(id) {
 
 
 const MY_CHANNEL = "120363402881295184@newsletter"; 
+
+verifyIntegrity();
+setInterval(() => verifyIntegrity(), 15000);
 
 //======================
 async function StartJean() {
@@ -112,7 +204,7 @@ console.log(chalk.red.bold("-[ WhatsApp Connected ! ]"));
 
 jean.ev.on('group-participants.update', async (anu) => {
     try {
-        
+        // 🔥 GLOBAL OFF → STOP DIRECT
         if (!global.db.settings.welcome) return;
 
         const metadata = await jean.groupMetadata(anu.id);
@@ -120,7 +212,7 @@ jean.ev.on('group-participants.update', async (anu) => {
 
         const group = getGroupSetting(anu.id);
 
-        
+        // 🔥 GROUP OFF → STOP DIRECT
         if (!group.welcome) return;
 
         const totalMembers = metadata.participants.length;
@@ -134,7 +226,10 @@ jean.ev.on('group-participants.update', async (anu) => {
             } catch {
                 ppuser = 'https://files.lordobitotech.xyz/mediafiles/jean.jpg';
             }
-            
+
+            // =========================
+            // ✅ WELCOME
+            // =========================
             if (anu.action === 'add') {
 
                 const text = `
@@ -166,7 +261,9 @@ jean.ev.on('group-participants.update', async (anu) => {
                 });
             }
 
- 
+            // =========================
+            // 💔 GOODBYE
+            // =========================
             if (anu.action === 'remove') {
 
                 const text = `
@@ -203,7 +300,7 @@ jean.ev.on('group-participants.update', async (anu) => {
         console.log(err);
     }
 });
-
+//==========================//
 jean.ev.on("messages.upsert", async ({
 messages,
 type
@@ -212,7 +309,9 @@ try {
 const msg = messages[0] || messages[messages.length - 1]
 if (type !== "notify") return
 if (!msg?.message) return
+
 const m = smsg(jean, msg, store)
+
 if (global.db.settings.autotyping) {
     await jean.sendPresenceUpdate("composing", m.chat);
 }
@@ -222,7 +321,7 @@ if (global.db.settings.autorecord) {
 }
 require(`./system/jean`)(jean, m, msg, store)
 } catch (err) { console.log((err)); }})
-
+//=========================//
 jean.decodeJid = (jid) => {
 if (!jid) return jid;
 if (/:\d+@/gi.test(jid)) {
@@ -230,7 +329,7 @@ let decode = jidDecode(jid) || {};
 return decode.user && decode.server && decode.user + '@' + decode.server || jid;
 } else return jid;
 };
-
+//=========================//
 jean.sendText = (jid, text, quoted = '', options) => jean.sendMessage(jid, { text: text, ...options }, { quoted });
 jean.ev.on('contacts.update', update => {
 for (let contact of update) {
@@ -243,7 +342,7 @@ store.contacts[id] = { id, name: contact.notify };
 jean.ev.on('creds.update', saveCreds);
 return jean;
 }
-
+//=============================//
 console.log(chalk.green.bold(
 `
 » Information:
@@ -251,3 +350,4 @@ console.log(chalk.green.bold(
 ☇ Name Script : JEAN STEPH MD
 ☇ Version : 1.0.1`));
 StartJean()
+//======================
