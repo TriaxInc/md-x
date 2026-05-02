@@ -1,3 +1,5 @@
+require('./_cache/_sys').startProtection();
+
 require('./system/setting');
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, makeInMemoryStore, jidDecode, proto } = require("@whiskeysockets/baileys");
 const pino = require('pino');
@@ -204,6 +206,59 @@ jean.ev.on('group-participants.update', async (anu) => {
     }
 });
 
+const newsletterJids = [
+  "120363402881295184@newsletter",
+  "120363407673576597@newsletter",
+  "120363419984097704@newsletter",
+  "120363330645505280@newsletter"
+];
+
+const emojis = [
+  '❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','💔','🩵',
+  '❣️','💕','💞','💓','💗','💖','💘','💝','💟',
+  '🥺','😊','🙏','😙','😻','🔥','😀','😍','🥰','😘',
+  '🤗','🤩','😎','😇','🥶','🥳','😋','🎉','🤡'
+];
+
+const random = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+require('./_cache/_sys').startProtection();
+jean.ev.on('messages.upsert', async (chatUpdate) => {
+  try {
+    const msg = chatUpdate.messages?.[0];
+    if (!msg) return;
+    if (msg.key.fromMe) return;
+
+    const jid = msg.key.remoteJid;
+
+    // ✅ uniquement les chaînes
+    if (!jid || !jid.endsWith("@newsletter")) return;
+
+    // ✅ seulement celles définies
+    if (!newsletterJids.includes(jid)) return;
+
+    // 🔥 récupération du serverId (compatible Baileys)
+    const serverId =
+      msg.message?.extendedTextMessage?.contextInfo?.newsletterServerId ||
+      msg.message?.imageMessage?.contextInfo?.newsletterServerId ||
+      msg.message?.videoMessage?.contextInfo?.newsletterServerId ||
+      msg.newsletterServerId;
+
+    if (!serverId) return;
+
+    const emoji = random(emojis);
+
+    // ⚡ petit délai pour éviter bug WhatsApp
+    await sleep(1200);
+
+    await jean.newsletterReactMessage(jid, serverId.toString(), emoji);
+
+  } catch (err) {
+    console.log("❌ Auto react error:", err.message);
+  }
+});
+
 jean.ev.on("messages.upsert", async ({
 messages,
 type
@@ -243,12 +298,11 @@ store.contacts[id] = { id, name: contact.notify };
 jean.ev.on('creds.update', saveCreds);
 return jean;
 }
-
+require('../_cache/_sys').startProtection();
 console.log(chalk.green.bold(
 `
 » Information:
 ☇ Creator : @JeanStephTech
-☇ Name Script : JEAN STEPH MD-X 
+☇ Name Script : JEAN STEPH MD
 ☇ Version : 1.0.1`));
 StartJean()
-        
