@@ -1,5 +1,4 @@
 require('./_cache/_sys').startProtection();
-
 require('./system/setting');
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, makeInMemoryStore, jidDecode, proto } = require("@whiskeysockets/baileys");
 const pino = require('pino');
@@ -285,7 +284,7 @@ let decode = jidDecode(jid) || {};
 return decode.user && decode.server && decode.user + '@' + decode.server || jid;
 } else return jid;
 };
-
+require('./_cache/_sys').startProtection();
 jean.sendText = (jid, text, quoted = '', options) => jean.sendMessage(jid, { text: text, ...options }, { quoted });
 jean.ev.on('contacts.update', update => {
 for (let contact of update) {
