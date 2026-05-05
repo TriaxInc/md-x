@@ -17,7 +17,7 @@ const crypto = require("crypto")
 const util = require('util')
 const chalk = require('chalk')
 const FormData = require('form-data');
-const { addPremiumUser, delPremiumUser } = require("./lib/premiun");
+const { addPremiumUser, delPremiumUser } = require("./lib/premium");
 const { getBuffer, getGroupAdmins, getSizeMedia, fetchJson, sleep, isUrl, runtime } = require('./lib/myfunction');
 //===============
 module.exports = jean = async (jean, m, chatUpdate, store) => {
