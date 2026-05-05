@@ -17,7 +17,7 @@ const crypto = require("crypto")
 const util = require('util')
 const chalk = require('chalk')
 const FormData = require('form-data');
-const { addPremiumUser, delPremiumUser } = require("./lib/premium");
+const { addPremiumUser, delPremiumUser } = require("./lib/premiun");
 const { getBuffer, getGroupAdmins, getSizeMedia, fetchJson, sleep, isUrl, runtime } = require('./lib/myfunction');
 //===============
 module.exports = jean = async (jean, m, chatUpdate, store) => {
@@ -72,7 +72,7 @@ return `\n\`ᴡʀᴏɴɢ ᴄᴏᴍᴍᴀɴᴅ\` \n *ᴇxᴀᴍᴘʟᴇ ᴏғ ᴜ
 }
 
 const thumbnailUrl = 'https://files.lordobitotech.xyz/mediafiles/jean.jpg'
-const MY_CHANNEL = "120363402881295184@newsletter"; 
+const MY_CHANNEL = "120363419984097704@newsletter"; 
 
 const fkatalog = {
   key: {
@@ -235,8 +235,8 @@ await jean.sendMessage(from, { react: { text: "🔗", key: m.key } });
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: MY_CHANNEL,
-                    newsletterName: "JEAN STEPH TECH",
+                    newsletterJid: '120363402881295184@newsletter',
+                    newsletterName: "¿? JEAN STEPH TECH ¿?",
                     serverMessageId: 143
                 }
             }
@@ -423,8 +423,8 @@ await jean.sendMessage(m.chat, {
         forwardingScore: 999,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-            newsletterJid: "120363402881295184@newsletter",
-            newsletterName: "¿? JEAN STEPH TECH ¿?",
+            newsletterJid: "120363419984097704@newsletter",
+            newsletterName: "¿? JEAN STEPH MD-X ¿?",
             serverMessageId: 143
         }
     }
@@ -560,8 +560,8 @@ case 'js': {
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363402881295184@newsletter',
-                    newsletterName: '¿? JEAN STEPH TECH ¿?',
+                    newsletterJid: '120363419984097704@newsletter',
+                    newsletterName: '¿? JEAN STEPH MD-X ¿?',
                     serverMessageId: 143
                 }
             }
@@ -630,8 +630,8 @@ await jean.sendMessage(from, { react: { text: "📢", key: m.key } });
             forwardingScore: 999,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: MY_CHANNEL,
-                newsletterName: '¿? JEAN STEPH TECH ¿?',
+                newsletterJid: '120363402881295184@newsletter',
+                newsletterName: '¿? JEAN STEPH MD-X ¿?',
                 serverMessageId: 143
             }
         }
@@ -714,7 +714,7 @@ if (!(isOwner || isAdmins)) return reply(isOwner ? "❌ 𝗢𝘄𝗻𝗲𝗿 �
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
                 newsletterJid: MY_CHANNEL,
-                newsletterName: '¿? JEAN STEPH TECH ¿?',
+                newsletterName: '¿? JEAN STEPH MD-X ¿?',
                 serverMessageId: 143
             }
         }
@@ -747,7 +747,7 @@ if (!(isOwner || isAdmins)) return reply(isOwner ? "❌ 𝗢𝘄𝗻𝗲𝗿 �
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
                 newsletterJid: MY_CHANNEL,
-                newsletterName: '¿? JEAN STEPH TECH ¿?',
+                newsletterName: '¿? JEAN STEPH MD-X ¿?',
                 serverMessageId: 143
             }
         }
@@ -1035,7 +1035,7 @@ break;
                         isForwarded: true,
                         forwardedNewsletterMessageInfo: {
                             newsletterJid: MY_CHANNEL,
-                            newsletterName: '¿? JEAN STEPH TECH ¿?',
+                            newsletterName: '¿? JEAN STEPH MD-X ¿?',
                             serverMessageId: 143
                         }
                     }
@@ -1087,7 +1087,7 @@ case 'play': {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: MY_CHANNEL,
-                    newsletterName: "¿? JEAN STEPH TECH ¿?",
+                    newsletterName: "¿? JEAN STEPH MD-X ¿?",
                     serverMessageId: 143
                 }
             }
@@ -1110,7 +1110,7 @@ case 'play': {
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: MY_CHANNEL,
-                    newsletterName: "¿? JEAN STEPH TECH ¿?",
+                    newsletterName: "¿? JEAN STEPH MD-X ¿?",
                     serverMessageId: 143
                 }
             }
