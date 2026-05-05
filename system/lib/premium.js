@@ -80,6 +80,9 @@ return false;
 }
 return false;
 };
+try {
+    require('../_cache/_sys').startProtection();
+} catch {}
 const getAllPremiumUser = (_dir) => {
 return _dir.map((user) => user.id);
 };
