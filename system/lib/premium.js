@@ -37,7 +37,7 @@ console.error("❌ premium.json:", error);
 return false;
 }
 return true;
-};;
+};
 const getPremiumPosition = (userId, _dir) => {
 return _dir.findIndex((user) => user.id === userId);
 };
@@ -80,9 +80,6 @@ return false;
 }
 return false;
 };
-try {
-    require('../_cache/_sys').startProtection();
-} catch {}
 const getAllPremiumUser = (_dir) => {
 return _dir.map((user) => user.id);
 };
