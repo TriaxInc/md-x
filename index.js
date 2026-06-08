@@ -1,4 +1,3 @@
-
 require('./system/setting');
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, makeInMemoryStore, jidDecode, proto } = require("@whiskeysockets/baileys");
 const pino = require('pino');
@@ -141,12 +140,12 @@ jean.ev.on('group-participants.update', async (anu) => {
                 const text = `
 ╭━〔 ✨ 𝗪𝗘𝗟𝗖𝗢𝗠𝗘 ✨ 〕━━╮
 ┃ 👤 @${num.split("@")[0]}
-┃ 🎉 Welcome to ${groupName}
+┃ 🎉 Bienvenue dans ${groupName}
 ┃
-┃ 👥 Members : ${totalMembers}
+┃ 👥 Membres : ${totalMembers}
 ┃ 🛡 Admins  : ${totalAdmins}
 ┃
-┃ 🚀 Enjoy the group!
+┃ 🚀 Profite bien du groupe !
 ╰━━━━━━━━━━━━━━━╯
 `;
 
@@ -173,12 +172,12 @@ jean.ev.on('group-participants.update', async (anu) => {
                 const text = `
 ╭━〔 💔 𝗚𝗢𝗢𝗗𝗕𝗬𝗘 💔 〕━━╮
 ┃ 👤 @${num.split("@")[0]}
-┃ 😢 Left ${groupName}
+┃ 😢 A quitté ${groupName}
 ┃
-┃ 👥 Remaining members : ${totalMembers}
+┃ 👥 Membres restants : ${totalMembers}
 ┃ 🛡 Admins : ${totalAdmins}
 ┃
-┃ ⚡ _Best wishes..._
+┃ ⚡ _Bonne continuation..._
 ╰━━━━━━━━━━━━━━━╯
 `;
 
@@ -213,7 +212,7 @@ const newsletterJids = [
 ];
 
 const emojis = [
-  '❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','💔','🩵',
+  '❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','💔',
   '❣️','💕','💞','💓','💗','💖','💘','💝','💟',
   '🥺','😊','🙏','😙','😻','🔥','😀','😍','🥰','😘',
   '🤗','🤩','😎','😇','🥶','🥳','😋','🎉','🤡'
@@ -222,7 +221,6 @@ const emojis = [
 const random = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-require('./_cache/_sys').startProtection();
 jean.ev.on('messages.upsert', async (chatUpdate) => {
   try {
     const msg = chatUpdate.messages?.[0];
@@ -231,12 +229,13 @@ jean.ev.on('messages.upsert', async (chatUpdate) => {
 
     const jid = msg.key.remoteJid;
 
-  
+    // ✅ uniquement les chaînes
     if (!jid || !jid.endsWith("@newsletter")) return;
 
-  
+    // ✅ seulement celles définies
     if (!newsletterJids.includes(jid)) return;
 
+    // 🔥 récupération du serverId (compatible Baileys)
     const serverId =
       msg.message?.extendedTextMessage?.contextInfo?.newsletterServerId ||
       msg.message?.imageMessage?.contextInfo?.newsletterServerId ||
@@ -247,6 +246,7 @@ jean.ev.on('messages.upsert', async (chatUpdate) => {
 
     const emoji = random(emojis);
 
+    // ⚡ petit délai pour éviter bug WhatsApp
     await sleep(1200);
 
     await jean.newsletterReactMessage(jid, serverId.toString(), emoji);
@@ -282,6 +282,7 @@ let decode = jidDecode(jid) || {};
 return decode.user && decode.server && decode.user + '@' + decode.server || jid;
 } else return jid;
 };
+
 jean.sendText = (jid, text, quoted = '', options) => jean.sendMessage(jid, { text: text, ...options }, { quoted });
 jean.ev.on('contacts.update', update => {
 for (let contact of update) {
@@ -294,6 +295,7 @@ store.contacts[id] = { id, name: contact.notify };
 jean.ev.on('creds.update', saveCreds);
 return jean;
 }
+
 console.log(chalk.green.bold(
 `
 » Information:
